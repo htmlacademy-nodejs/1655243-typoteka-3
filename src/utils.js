@@ -19,10 +19,11 @@ const shuffle = (someArray) => {
 };
 
 const getRandomItemsFromArray = (array) => {
-  const arrayLastItemIndex = array.length - 1;
+  const shuffledArray = shuffle([...array]);
+  const arrayLastItemIndex = shuffledArray.length - 1;
   const randomStartIndex = getRandomInt(1, arrayLastItemIndex - 1);
 
-  return array.slice(randomStartIndex, arrayLastItemIndex);
+  return shuffledArray.slice(randomStartIndex, arrayLastItemIndex);
 };
 
 const getRandomDate = (monthDifferenceBetweenDates) => {

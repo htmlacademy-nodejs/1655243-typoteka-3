@@ -1,9 +1,11 @@
 'use strict';
 
+const chalk = require(`chalk`);
+
 module.exports = {
   name: `--help`,
   run() {
-    console.info(commandHelpText);
+    console.info(chalk.grey(commandHelpText));
   }
 };
 
