@@ -8,8 +8,8 @@ const {
 } = require(`../../utils`);
 
 const {
-  CATEGORIES, SENTENCES, TITLES
-} = require(`../../data/generate`);
+  FILE_SENTENCES_PATH, FILE_TITLES_PATH, FILE_CATEGORIES_PATH
+} = require(`../../../data/generate`);
 
 const {
   AnnounceRestrict, ExitCode
@@ -26,6 +26,10 @@ const MONTH_DIFFERENCE_BETWEEN_DATES = 3;
 module.exports = {
   name: `--generate`,
   async run(args) {
+    const sentences = await readContent(FILE_SENTENCES_PATH);
+    const titles = await readContent(FILE_TITLES_PATH);
+    const categories = await readContent(FILE_CATEGORIES_PATH);
+
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT_OFFER;
 
@@ -34,7 +38,7 @@ module.exports = {
       process.exit(ExitCode.ERROR);
     }
 
-    const content = JSON.stringify(generateOffers(countOffer));
+    const content = JSON.stringify(generateOffers(countOffer, titles, categories, sentences));
 
     try {
       await fs.writeFile(MOCKS_FILE_NAME, content);
@@ -47,13 +51,25 @@ module.exports = {
   }
 };
 
-const generateOffers = (count) => (
+const readContent = async (filePath) => {
+  const encoding = `utf-8`;
+
+  try {
+    const content = await fs.readFile(filePath, encoding);
+    return content.trim().split(`\n`);
+  } catch (err) {
+    console.error(chalk.red(err));
+    return [];
+  }
+};
+
+const generateOffers = (count, titles, categories, sentences) => (
   Array(count).fill({}).map(() => ({
-    title: TITLES[getRandomInt(0, TITLES.length - 1)],
-    announce: shuffle(SENTENCES).slice(AnnounceRestrict.MIN, AnnounceRestrict.MAX).join(` `),
-    fullText: shuffle(SENTENCES).slice(1, SENTENCES.length - 1).join(` `),
+    title: titles[getRandomInt(0, titles.length - 1)],
+    announce: shuffle(sentences).slice(AnnounceRestrict.MIN, AnnounceRestrict.MAX).join(` `),
+    fullText: shuffle(sentences).slice(1, sentences.length - 1).join(` `),
     createdDate: getRandomDate(MONTH_DIFFERENCE_BETWEEN_DATES),
-    category: getRandomItemsFromArray(CATEGORIES),
+    category: getRandomItemsFromArray(categories),
   }))
 );
 
