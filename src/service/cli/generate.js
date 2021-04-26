@@ -8,10 +8,6 @@ const {
 } = require(`../../utils`);
 
 const {
-  FILE_SENTENCES_PATH, FILE_TITLES_PATH, FILE_CATEGORIES_PATH
-} = require(`../../../data/generate`);
-
-const {
   AnnounceRestrict, ExitCode
 } = require(`./const`);
 
@@ -22,6 +18,10 @@ const DEFAULT_COUNT_OFFER = 1;
 const MAX_COUNT_OFFER = 1000;
 const MOCKS_FILE_NAME = `mocks.json`;
 const MONTH_DIFFERENCE_BETWEEN_DATES = 3;
+
+const FILE_SENTENCES_PATH = `./data/sentences.txt`;
+const FILE_TITLES_PATH = `./data/titles.txt`;
+const FILE_CATEGORIES_PATH = `./data/categories.txt`;
 
 module.exports = {
   name: `--generate`,
