@@ -8,8 +8,12 @@ const {
 } = require(`../../utils`);
 
 const {
-  AnnounceRestrict, ExitCode
+  AnnounceRestrict, ExitCode, MAX_ID_LENGTH
 } = require(`./const`);
+
+const {
+  nanoid
+} = require(`nanoid`);
 
 const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
@@ -19,9 +23,13 @@ const MAX_COUNT_OFFER = 1000;
 const MOCKS_FILE_NAME = `mocks.json`;
 const MONTH_DIFFERENCE_BETWEEN_DATES = 3;
 
+const MAX_COMMENTS = 4;
+const MAX_COMMENT_SENTENCES = 3;
+
 const FILE_SENTENCES_PATH = `./data/sentences.txt`;
 const FILE_TITLES_PATH = `./data/titles.txt`;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
+const FILE_COMMENTS_PATH = `./data/comments.txt`;
 
 module.exports = {
   name: `--generate`,
@@ -29,6 +37,7 @@ module.exports = {
     const sentences = await readContent(FILE_SENTENCES_PATH);
     const titles = await readContent(FILE_TITLES_PATH);
     const categories = await readContent(FILE_CATEGORIES_PATH);
+    const comments = await readContent(FILE_COMMENTS_PATH);
 
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT_OFFER;
@@ -38,7 +47,7 @@ module.exports = {
       process.exit(ExitCode.ERROR);
     }
 
-    const content = JSON.stringify(generateOffers(countOffer, titles, categories, sentences));
+    const content = JSON.stringify(generateOffers(countOffer, titles, categories, sentences, comments));
 
     try {
       await fs.writeFile(MOCKS_FILE_NAME, content);
@@ -63,13 +72,23 @@ const readContent = async (filePath) => {
   }
 };
 
-const generateOffers = (count, titles, categories, sentences) => (
+const generateOffers = (count, titles, categories, sentences, comments) => (
   Array(count).fill({}).map(() => ({
+    id: nanoid(MAX_ID_LENGTH),
     title: titles[getRandomInt(0, titles.length - 1)],
     announce: shuffle(sentences).slice(AnnounceRestrict.MIN, AnnounceRestrict.MAX).join(` `),
     fullText: shuffle(sentences).slice(1, sentences.length - 1).join(` `),
     createdDate: getRandomDate(MONTH_DIFFERENCE_BETWEEN_DATES),
     category: getRandomItemsFromArray(categories),
+    comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments)
   }))
 );
 
+const generateComments = (count, comments) => (
+  Array(count).fill({}).map(() => ({
+    id: nanoid(MAX_ID_LENGTH),
+    text: shuffle(comments)
+      .slice(0, getRandomInt(1, MAX_COMMENT_SENTENCES))
+      .join(` `),
+  }))
+);
