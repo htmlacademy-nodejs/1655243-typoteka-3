@@ -7,13 +7,8 @@ const {
   getRandomDate
 } = require(`../../utils`);
 
-const {
-  AnnounceRestrict, ExitCode, MAX_ID_LENGTH
-} = require(`./const`);
-
-const {
-  nanoid
-} = require(`nanoid`);
+const {AnnounceRestrict, ExitCode, MAX_ID_LENGTH} = require(`../../constants`);
+const {nanoid} = require(`nanoid`);
 
 const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
