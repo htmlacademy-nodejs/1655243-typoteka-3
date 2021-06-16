@@ -1,0 +1,5 @@
+mixin dateTime(dateTime)
+  - const timeOptions = { hour: '2-digit', minute: '2-digit' }
+  time(class!=attributes.class, datetime=dateTime)
+    | #{new Date(dateTime).toLocaleDateString(`ru`)}
+    | #{new Date(dateTime).toLocaleTimeString(`ru`, timeOptions)}
