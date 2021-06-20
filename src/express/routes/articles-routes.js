@@ -29,25 +29,27 @@ articlesRouter.get(`/add`, async (req, res) => {
 });
 
 articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
+  const {body, file} = req;
+
+  const articleData = {
+    createdDate: body.date,
+    title: body.title,
+    category: body.category || [],
+    announce: body.announcement,
+    fullText: body[`full-text`],
+  };
+
+  if (file) {
+    articleData.picture = file.filename;
+  }
+
   try {
-    const {body, file} = req;
-
-    const articleData = {
-      createdDate: body.date,
-      title: body.title,
-      category: body.category || [],
-      announce: body.announcement,
-      fullText: body[`full-text`],
-    };
-
-    if (file) {
-      articleData.picture = file.filename;
-    }
-
     await api.createArticle(articleData);
     res.redirect(`/my`);
   } catch (err) {
-    res.redirect(`back`);
+    const categories = await api.getCategories();
+    res.status(400);
+    res.render(`articles/new-post`, {categories, articleData});
   }
 });
 

@@ -6,7 +6,7 @@ const articleKeys = [`title`, `announce`, `createdDate`, `category`];
 
 module.exports = (req, res, next) => {
   const newArticle = req.body;
-  console.log(newArticle);
+
   const keys = Object.keys(newArticle);
   const keysExists = articleKeys.every((key) => keys.includes(key));
 
