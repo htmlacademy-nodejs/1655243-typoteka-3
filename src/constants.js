@@ -3,6 +3,18 @@
 const DEFAULT_COMMAND = `--help`;
 const USER_ARGV_INDEX = 2;
 const MAX_ID_LENGTH = 6;
+const DEFAULT_COUNT_ARTICLES = 1;
+const MAX_COUNT_ARTICLES = 1000;
+const MONTH_DIFFERENCE_BETWEEN_DATES = 3;
+const MAX_COMMENTS = 4;
+const MAX_COMMENT_SENTENCES = 3;
+
+const MOCKS_FILE_NAME = `mocks.json`;
+const FILL_DB_FILE_NAME = `fill-db.sql`;
+const FILE_SENTENCES_PATH = `./data/sentences.txt`;
+const FILE_TITLES_PATH = `./data/titles.txt`;
+const FILE_CATEGORIES_PATH = `./data/categories.txt`;
+const FILE_COMMENTS_PATH = `./data/comments.txt`;
 
 const ExitCode = {
   ERROR: 1,
@@ -35,6 +47,17 @@ module.exports = {
   DEFAULT_COMMAND,
   USER_ARGV_INDEX,
   MAX_ID_LENGTH,
+  DEFAULT_COUNT_ARTICLES,
+  MAX_COUNT_ARTICLES,
+  MONTH_DIFFERENCE_BETWEEN_DATES,
+  MAX_COMMENTS,
+  MAX_COMMENT_SENTENCES,
+  MOCKS_FILE_NAME,
+  FILL_DB_FILE_NAME,
+  FILE_SENTENCES_PATH,
+  FILE_TITLES_PATH,
+  FILE_CATEGORIES_PATH,
+  FILE_COMMENTS_PATH,
   HttpCode,
   ExitCode,
   AnnounceRestrict,
