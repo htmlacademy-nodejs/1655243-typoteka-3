@@ -1,11 +1,12 @@
 'use strict';
 
-const {HttpCode, API_PREFIX} = require(`../../constants`);
+const {HttpCode, API_PREFIX, ExitCode} = require(`../../constants`);
 const chalk = require(`chalk`);
 const express = require(`express`);
 const routes = require(`../api`);
 const getMockData = require(`../lib/get-mock-data`);
 const {getLogger} = require(`../lib/logger`);
+const sequelize = require(`../lib/sequelize`);
 
 const DEFAULT_PORT = 3000;
 
@@ -18,6 +19,15 @@ module.exports = {
 
     const mockData = await getMockData();
     const logger = getLogger({name: `api`});
+
+    try {
+      logger.info(`Trying to connect to database...`);
+      await sequelize.authenticate();
+      logger.info(`Connection to database established`);
+    } catch (err) {
+      logger.error(`An error occurred: ${err.message}`);
+      process.exit(ExitCode.ERROR);
+    }
 
     app.use(express.json());
     app.use(API_PREFIX, routes(mockData));
