@@ -6,6 +6,11 @@ const category = require(`./category`);
 const article = require(`./article`);
 const search = require(`./search`);
 
+const sequelize = require(`../lib/sequelize`);
+const defineModels = require(`../models/models`);
+
+defineModels(sequelize);
+
 const {
   CategoryService,
   SearchService,
@@ -13,12 +18,12 @@ const {
   CommentService,
 } = require(`../data-service`);
 
-module.exports = (mockData) => {
+module.exports = () => {
   const app = new Router();
 
-  article(app, new ArticleService(mockData), new CommentService());
-  category(app, new CategoryService(mockData));
-  search(app, new SearchService(mockData));
+  article(app, new ArticleService(sequelize), new CommentService(sequelize));
+  category(app, new CategoryService(sequelize));
+  search(app, new SearchService(sequelize));
 
   return app;
 };

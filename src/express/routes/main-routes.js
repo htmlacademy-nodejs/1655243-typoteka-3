@@ -6,8 +6,12 @@ const api = require(`../api`).getAPI();
 const mainRouter = new Router();
 
 mainRouter.get(`/`, async (req, res) => {
-  const articles = await api.getArticles();
-  res.render(`main`, {articles});
+  const [articles, categories] = await Promise.all([
+    api.getArticles({comments: true}),
+    api.getCategories(true)
+  ]);
+
+  res.render(`main`, {articles, categories});
 });
 
 mainRouter.get(`/register`, (req, res) => res.render(`sign-up`));
@@ -23,6 +27,10 @@ mainRouter.get(`/search`, async (req, res) => {
   }
 });
 
-mainRouter.get(`/categories`, (req, res) => res.render(`all-categories`));
+mainRouter.get(`/categories`, async (req, res) => {
+  const categories = await api.getCategories();
+
+  res.render(`all-categories`, {categories});
+});
 
 module.exports = mainRouter;

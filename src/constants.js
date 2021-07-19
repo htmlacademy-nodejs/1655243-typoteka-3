@@ -42,6 +42,11 @@ const Environment = {
   PRODUCTION: `production`,
 };
 
+const DbPoolConnection = {
+  MIN: 0,
+  MAX: 5,
+};
+
 module.exports = {
   API_PREFIX,
   DEFAULT_COMMAND,
@@ -61,5 +66,6 @@ module.exports = {
   HttpCode,
   ExitCode,
   AnnounceRestrict,
-  Environment
+  Environment,
+  DbPoolConnection
 };

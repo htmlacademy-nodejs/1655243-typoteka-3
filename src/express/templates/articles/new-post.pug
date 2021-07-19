@@ -32,10 +32,10 @@ block content
                         input.visually-hidden(type='file' name='upload')
                         | Обзор
                   .new-publication__category-wrapper
-                    each category, index in categories
+                    each category in categories
                       .new-publication__checkbox.new-publication__checkbox--auto
-                        input(id=`checkbox-auto-${index}` type='checkbox' name='category[]')
-                        label(for=`checkbox-auto-${index}`)= category
+                        input(id=`checkbox-auto-${category.id}` type='checkbox' name=category.name)
+                        label(for=`checkbox-auto-${category.id}`)= category.name
                     a.new-publication__form-link.button.button--transparent(href='/categories') Добавить категорию
                   .form__wrapper.form__wrapper--text
                     .form__field.form__field--publication-text
@@ -58,8 +58,8 @@ block content
                   .new-publication__category-wrapper
                     each category, index in categories
                       .new-publication__checkbox.new-publication__checkbox--auto
-                        input(id=`checkbox-auto-${index}` type='checkbox' name='category[]' checked=articleData.category.includes(category))
-                        label(for=`checkbox-auto-${index}`)= category
+                        input(id=`checkbox-auto-${category.id}` type='checkbox' name=category.name checked=articleData.categories.includes(category))
+                        label(for=`checkbox-auto-${category.id}`)= category.name
                     a.new-publication__form-link.button.button--transparent(href='/categories') Добавить категорию
                   .form__wrapper.form__wrapper--text
                     .form__field.form__field--publication-text

@@ -19,8 +19,8 @@ class API {
     return response.data;
   }
 
-  getArticles() {
-    return this._load(`/articles`);
+  getArticles({comments}) {
+    return this._load(`/articles`, {params: {comments}});
   }
 
   getArticleById(id) {
@@ -34,8 +34,8 @@ class API {
     });
   }
 
-  getCategories() {
-    return this._load(`/categories`);
+  getCategories(count) {
+    return this._load(`/categories`, {params: {count}});
   }
 
   search(query) {
