@@ -25,12 +25,11 @@ const {
 const {customAlphabet} = require(`nanoid`);
 
 const {getLogger} = require(`../lib/logger`);
-const sequelize = require(`../lib/sequelize`);
+const getSequelize = require(`../lib/sequelize`);
 const initDatabase = require(`../lib/init-db`);
 
-const logger = getLogger({
-  name: `filldb`
-});
+const sequelize = getSequelize();
+const logger = getLogger({name: `filldb`});
 
 module.exports = {
   name: `--filldb`,
@@ -54,7 +53,8 @@ module.exports = {
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT_ARTICLES;
     const articles = generateArticles(countOffer, titles, categories, sentences, comments);
 
-    return initDatabase(sequelize, {articles, categories});
+    await initDatabase(sequelize, {articles, categories});
+    await sequelize.close();
   }
 };
 

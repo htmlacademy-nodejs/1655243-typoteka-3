@@ -6,8 +6,10 @@ const category = require(`./category`);
 const article = require(`./article`);
 const search = require(`./search`);
 
-const sequelize = require(`../lib/sequelize`);
+const getSequelize = require(`../lib/sequelize`);
 const defineModels = require(`../models/models`);
+
+const sequelize = getSequelize();
 
 defineModels(sequelize);
 
