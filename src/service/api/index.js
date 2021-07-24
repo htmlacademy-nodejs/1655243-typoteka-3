@@ -9,10 +9,6 @@ const search = require(`./search`);
 const getSequelize = require(`../lib/sequelize`);
 const defineModels = require(`../models/models`);
 
-const sequelize = getSequelize();
-
-defineModels(sequelize);
-
 const {
   CategoryService,
   SearchService,
@@ -22,6 +18,9 @@ const {
 
 module.exports = () => {
   const app = new Router();
+  const sequelize = getSequelize();
+
+  defineModels(sequelize);
 
   article(app, new ArticleService(sequelize), new CommentService(sequelize));
   category(app, new CategoryService(sequelize));
