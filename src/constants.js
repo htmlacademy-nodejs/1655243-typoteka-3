@@ -47,6 +47,13 @@ const DbPoolConnection = {
   MAX: 5,
 };
 
+const HttpMethod = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+};
+
 module.exports = {
   API_PREFIX,
   DEFAULT_COMMAND,
@@ -67,5 +74,6 @@ module.exports = {
   ExitCode,
   AnnounceRestrict,
   Environment,
-  DbPoolConnection
+  DbPoolConnection,
+  HttpMethod
 };

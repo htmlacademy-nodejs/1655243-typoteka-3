@@ -48,10 +48,24 @@ const readContent = async (filePath) => {
   }
 };
 
+const calculatePaginationParams = (req, elementsCountPerPage) => {
+  let {page = 1} = req.query;
+  page = +page;
+  const limit = elementsCountPerPage;
+  const offset = (page - 1) * elementsCountPerPage;
+
+  return {
+    page,
+    limit,
+    offset
+  };
+};
+
 module.exports = {
   getRandomInt,
   shuffle,
   getRandomItemsFromArray,
   getRandomDate,
   readContent,
+  calculatePaginationParams,
 };

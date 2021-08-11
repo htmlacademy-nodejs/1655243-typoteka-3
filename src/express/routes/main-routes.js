@@ -1,6 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
+const {calculatePaginationParams} = require(`../../utils`);
 
 const mainRouter = new Router();
 const api = require(`../api`).getAPI();
@@ -8,10 +9,7 @@ const api = require(`../api`).getAPI();
 const ARTICLES_PER_PAGE = 8;
 
 mainRouter.get(`/`, async (req, res) => {
-  let {page = 1} = req.query;
-  page = +page;
-  const limit = ARTICLES_PER_PAGE;
-  const offset = (page - 1) * ARTICLES_PER_PAGE;
+  const {page, limit, offset} = calculatePaginationParams(req, ARTICLES_PER_PAGE);
 
   const [
     {count, articles},

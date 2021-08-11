@@ -2,6 +2,9 @@ mixin pagination(page, totalPages, width, prefix)
     -
       let start = page - width;
       let end = page + width;
+      if (totalPages == 1){
+        return;
+      }
       if(start < 1){
         end += 1 - start;
         start = 1;
@@ -18,7 +21,7 @@ mixin pagination(page, totalPages, width, prefix)
       ul.preview__pagination.pagination
         if start > 1
           li
-            a.pagination__button.button.button--backwards.button--disabled(href=`${prefix}page=${page - 1}` aria-label='Страница назад') Назад
+            a.pagination__button.button.button--backwards(href=`${prefix}page=${page - 1}` aria-label='Страница назад') Назад
         while i++ < end
           li.pagination__item(class={"pagination__item--active": i === page})
             a(href=`${prefix}page=${i}`)= i

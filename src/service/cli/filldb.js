@@ -67,7 +67,7 @@ const generateArticles = (count, titles, categories, sentences, comments) => {
     announce: shuffle(sentences).slice(AnnounceRestrict.MIN, AnnounceRestrict.MAX).join(` `),
     fullText: shuffle(sentences).slice(1, sentences.length - 1).join(` `),
     createdDate: getRandomDate(MONTH_DIFFERENCE_BETWEEN_DATES),
-    category: getRandomItemsFromArray(categories),
+    categories: getRandomItemsFromArray(categories),
     comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments)
   }));
 };

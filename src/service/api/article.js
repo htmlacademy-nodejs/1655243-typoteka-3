@@ -42,13 +42,12 @@ module.exports = (app, articleService, commentService) => {
 
   route.put(`/:articleId`, articleValidator, async (req, res) => {
     const {articleId} = req.params;
-    const article = await articleService.findOne(articleId);
+    const updatedArticle = await articleService.update(articleId, req.body);
 
-    if (!article) {
+    if (!updatedArticle) {
       return res.status(HttpCode.NOT_FOUND).send(`Not found with ${articleId}`);
     }
 
-    const updatedArticle = await articleService.update(articleId, req.body);
     return res.status(HttpCode.OK).json(updatedArticle);
   });
 

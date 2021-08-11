@@ -20,7 +20,7 @@ module.exports = async (sequelize, {categories, articles}) => {
     const articleModel = await Article.create(article, {include: [Aliase.COMMENTS]});
 
     await articleModel.addCategories(
-        article.category.map((name) => categoryIdByName[name]));
+        article.categories.map((name) => categoryIdByName[name]));
   });
 
   await Promise.all(articlePromises);

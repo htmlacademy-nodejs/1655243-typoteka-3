@@ -2,6 +2,7 @@
 
 const axios = require(`axios`);
 
+const {HttpMethod} = require(`../constants`);
 const TIMEOUT = 1000;
 const port = process.env.API_PORT || 3000;
 const defaultURL = `http://localhost:${port}/api/`;
@@ -29,7 +30,7 @@ class API {
 
   createArticle(data) {
     return this._load(`/articles`, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data,
     });
   }
@@ -40,6 +41,20 @@ class API {
 
   search(query) {
     return this._load(`/search`, {params: {query}});
+  }
+
+  editArticle(id, data) {
+    return this._load(`/articles/${id}`, {
+      method: HttpMethod.PUT,
+      data
+    });
+  }
+
+  createComment(id, data) {
+    return this._load(`/articles/${id}/comments`, {
+      method: HttpMethod.POST,
+      data
+    });
   }
 }
 

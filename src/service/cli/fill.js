@@ -67,7 +67,7 @@ const getGeneratedArticles = (articlesCount, titles, categoryCount, userCount, s
     createdAt: getRandomDate(MONTH_DIFFERENCE_BETWEEN_DATES),
     announce: shuffle(sentences).slice(AnnounceRestrict.MIN, AnnounceRestrict.MAX).join(` `),
     fullText: shuffle(sentences).slice(1, sentences.length - 1).join(` `),
-    category: [getRandomInt(1, categoryCount)],
+    categories: [getRandomInt(1, categoryCount)],
     comments: getGeneratedComments(getRandomInt(1, MAX_COMMENTS), index + 1, userCount, comments),
   }));
 };
