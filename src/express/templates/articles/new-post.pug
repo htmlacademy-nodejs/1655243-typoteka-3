@@ -1,5 +1,4 @@
 extends ../layout.pug
-include ../mixins/errorMessage.pug
 
 block content
   main
@@ -21,7 +20,11 @@ block content
               | окно
             .new-publication__form.form
               .form__wrapper.form__wrapper--intro
-                +errorMessage(error)
+                if creationErrors
+                  .form__validation-error
+                    ul.form__errors
+                      each error in creationErrors
+                        li.form__error #{error}
                 if !articleData
                   .form__field
                     label

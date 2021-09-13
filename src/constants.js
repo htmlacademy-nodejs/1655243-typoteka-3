@@ -16,6 +16,9 @@ const FILE_TITLES_PATH = `./data/titles.txt`;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
 const FILE_COMMENTS_PATH = `./data/comments.txt`;
 
+const MIN_PASSWORD_LENGTH = 6;
+const MAX_PASSWORD_LENGTH = 12;
+
 const ExitCode = {
   ERROR: 1,
 };
@@ -54,6 +57,23 @@ const HttpMethod = {
   DELETE: `DELETE`
 };
 
+const USERS = [
+  {
+    name: `Иван`,
+    surname: `Иванов`,
+    email: `ivanov@example.com`,
+    passwordHash: `ivanov`,
+    avatar: `avatar01.jpg`
+  },
+  {
+    name: `Пётр`,
+    surname: `Петров`,
+    email: `petrov@example.com`,
+    passwordHash: `petrov`,
+    avatar: `avatar02.jpg`
+  }
+];
+
 module.exports = {
   API_PREFIX,
   DEFAULT_COMMAND,
@@ -70,6 +90,9 @@ module.exports = {
   FILE_TITLES_PATH,
   FILE_CATEGORIES_PATH,
   FILE_COMMENTS_PATH,
+  MIN_PASSWORD_LENGTH,
+  MAX_PASSWORD_LENGTH,
+  USERS,
   HttpCode,
   ExitCode,
   AnnounceRestrict,

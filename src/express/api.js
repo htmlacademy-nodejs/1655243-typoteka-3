@@ -56,6 +56,13 @@ class API {
       data
     });
   }
+
+  async createUser(data) {
+    return await this._load(`/user`, {
+      method: `POST`,
+      data
+    });
+  }
 }
 
 const defaultAPI = new API(defaultURL, TIMEOUT);

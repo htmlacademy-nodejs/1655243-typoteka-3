@@ -2,9 +2,10 @@
 
 const {Router} = require(`express`);
 const {HttpCode} = require(`../../constants`);
-const articleValidator = require(`../middlewares/article-validator`);
 const articleExists = require(`../middlewares/article-exists`);
-const commentValidator = require(`../middlewares/comment-validator`);
+const schemeValidator = require(`../validators/scheme-validator`);
+const articleScheme = require(`../validators/schemes/article-scheme`);
+const commentScheme = require(`../validators/schemes/comment-scheme`);
 
 module.exports = (app, articleService, commentService) => {
   const route = new Router();
@@ -35,12 +36,12 @@ module.exports = (app, articleService, commentService) => {
     return res.status(HttpCode.OK).json(article);
   });
 
-  route.post(`/`, articleValidator, async (req, res) => {
+  route.post(`/`, schemeValidator(articleScheme), async (req, res) => {
     const article = await articleService.create(req.body);
     res.status(HttpCode.CREATED).json(article);
   });
 
-  route.put(`/:articleId`, articleValidator, async (req, res) => {
+  route.put(`/:articleId`, schemeValidator(articleScheme), async (req, res) => {
     const {articleId} = req.params;
     const updatedArticle = await articleService.update(articleId, req.body);
 
@@ -79,9 +80,14 @@ module.exports = (app, articleService, commentService) => {
     return res.status(HttpCode.OK).json(commentWasRemoved);
   });
 
-  route.post(`/:articleId/comments`, [articleExists(articleService), commentValidator], async (req, res) => {
-    const {article} = res.locals;
-    const comment = await commentService.create(article.id, req.body);
-    res.status(HttpCode.CREATED).json(comment);
+  route.post(`/:articleId/comments`, [articleExists(articleService), schemeValidator(commentScheme)], async (req, res) => {
+    const {articleId} = req.params;
+    const userId = 1;
+
+    const comment = await commentService.create(articleId, userId, req.body);
+
+    res
+      .status(HttpCode.CREATED)
+      .json(comment);
   });
 };

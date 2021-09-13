@@ -1,28 +1,14 @@
 'use strict';
 
 const {Router} = require(`express`);
-const multer = require(`multer`);
-const path = require(`path`);
-const {nanoid} = require(`nanoid`);
 const api = require(`../api`).getAPI();
 const {calculatePaginationParams} = require(`../../utils`);
-
-const UPLOAD_DIR = `../upload/img`;
-const uploadDirAbsolutePath = path.resolve(__dirname, UPLOAD_DIR);
+const upload = require(`../../service/middlewares/upload`);
 
 const ARTICLES_BY_CATEGORY_PER_PAGE = 8;
-
-const storage = multer.diskStorage({
-  destination: uploadDirAbsolutePath,
-  filename: (req, file, cb) => {
-    const uniqueName = nanoid(10);
-    const extension = file.originalname.split(`.`).pop();
-    cb(null, `${uniqueName}.${extension}`);
-  },
-});
+const TEMP_USER_ID = 1;
 
 const articlesRouter = new Router();
-const upload = multer({storage});
 
 articlesRouter.get(`/category/:id`, async (req, res) => {
   const {page} = calculatePaginationParams(req, ARTICLES_BY_CATEGORY_PER_PAGE);
@@ -49,6 +35,7 @@ articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
     announce: body.announcement,
     fullText: body[`full-text`],
     picture: body.picture ? body.picture : ``,
+    userId: TEMP_USER_ID,
   };
 
   if (file) {
@@ -64,8 +51,14 @@ articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
     res.redirect(`/my`);
   } catch (error) {
     const categories = await api.getCategories();
+    let {errorMessages} = error.response.data;
+
     res.status(400);
-    res.render(`articles/new-post`, {categories, articleData, error: error.response.data});
+    res.render(`articles/new-post`, {
+      categories,
+      articleData,
+      creationErrors: errorMessages
+    });
   }
 });
 
@@ -96,6 +89,7 @@ articlesRouter.post(`/edit/:id`, upload.single(`upload`), async (req, res) => {
     announce: body.announcement,
     fullText: body[`full-text`],
     picture: body.picture ? body.picture : ``,
+    userId: TEMP_USER_ID
   };
 
   if (file) {
@@ -110,7 +104,19 @@ articlesRouter.post(`/edit/:id`, upload.single(`upload`), async (req, res) => {
     await api.editArticle(id, articleData);
     res.redirect(`/my`);
   } catch (error) {
-    res.redirect(`/articles/edit/${id}?error=${encodeURIComponent(error.response.data)}`);
+    const {errorMessages} = error.response.data;
+
+    const [article, categories] = await Promise.all([
+      api.getArticleById(id),
+      api.getCategories()
+    ]);
+
+    res.status(400);
+    res.render(`articles/edit-post`, {
+      categories,
+      article,
+      updateErrors: errorMessages
+    });
   }
 });
 
@@ -132,10 +138,16 @@ articlesRouter.post(`/:id/comments`, async (req, res) => {
   const {message} = req.body;
 
   try {
-    await api.createComment(id, {text: message});
+    await api.createComment(id, {
+      text: message,
+      userId: TEMP_USER_ID,
+    });
     res.redirect(`/articles/${id}`);
   } catch (error) {
-    res.redirect(`/articles/${id}?error=${encodeURIComponent(error.response.data)}`);
+    const {errorMessages} = error.response.data;
+    const errors = errorMessages.map((errorDescription) => `${errorDescription}&`);
+
+    res.redirect(`/articles/${id}?error=${encodeURIComponent(errors)}`);
   }
 });
 

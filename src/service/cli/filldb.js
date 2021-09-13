@@ -19,7 +19,8 @@ const {
   FILE_TITLES_PATH,
   FILE_CATEGORIES_PATH,
   FILE_COMMENTS_PATH,
-  MONTH_DIFFERENCE_BETWEEN_DATES
+  MONTH_DIFFERENCE_BETWEEN_DATES,
+  USERS,
 } = require(`../../constants`);
 
 const {customAlphabet} = require(`nanoid`);
@@ -51,14 +52,14 @@ module.exports = {
 
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT_ARTICLES;
-    const articles = generateArticles(countOffer, titles, categories, sentences, comments);
+    const articles = generateArticles(countOffer, titles, categories, sentences, comments, USERS);
 
-    await initDatabase(sequelize, {articles, categories});
+    await initDatabase(sequelize, {articles, categories, users: USERS});
     await sequelize.close();
   }
 };
 
-const generateArticles = (count, titles, categories, sentences, comments) => {
+const generateArticles = (count, titles, categories, sentences, comments, users) => {
   const nanoid = customAlphabet(`1234567890`, MAX_ID_LENGTH);
 
   return Array(count).fill({}).map(() => ({
@@ -68,11 +69,12 @@ const generateArticles = (count, titles, categories, sentences, comments) => {
     fullText: shuffle(sentences).slice(1, sentences.length - 1).join(` `),
     createdDate: getRandomDate(MONTH_DIFFERENCE_BETWEEN_DATES),
     categories: getRandomItemsFromArray(categories),
-    comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments)
+    comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments, users),
+    user: users[getRandomInt(0, users.length - 1)].email
   }));
 };
 
-const generateComments = (count, comments) => {
+const generateComments = (count, comments, users) => {
   const nanoid = customAlphabet(`1234567890`, MAX_ID_LENGTH);
 
   return Array(count).fill({}).map(() => ({
@@ -80,5 +82,6 @@ const generateComments = (count, comments) => {
     text: shuffle(comments)
       .slice(0, getRandomInt(1, MAX_COMMENT_SENTENCES))
       .join(` `),
+    user: users[getRandomInt(0, users.length - 1)].email
   }));
 };

@@ -5,7 +5,7 @@ const Alias = {
   ARTICLE_CATEGORY: `article_category`,
   CATEGORIES: `categories`,
   COMMENTS: `comments`,
-  USERS: `users`,
+  USER: `user`,
 };
 
 module.exports = Alias;

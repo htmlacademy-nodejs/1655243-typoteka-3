@@ -1,13 +1,65 @@
-'use strict';
+"use strict";
 
 const express = require(`express`);
 const request = require(`supertest`);
 const Sequelize = require(`sequelize`);
 
 const initDB = require(`../lib/init-db`);
-const search = require(`./search`);
-const SearchService = require(`../data-service/search`);
-const {HttpCode, USERS} = require(`../../constants`);
+const user = require(`./user-routes`);
+const UserService = require(`../data-service/user`);
+
+const {HttpCode} = require(`../../constants`);
+
+// const mockUsers = [
+//   {
+//     name: `Alex`,
+//     surname: ``,
+//     avatar: `dvsdv.jpg`,
+//     email: `alex@gmail.com`,
+//     password: `123456`,
+//     passwordRepeat: `123456`
+//   },
+//   {
+//     name: `Иван`,
+//     surname: `Иванович`,
+//     avatar: ``,
+//     email: `ivan@gmail.com`,
+//     password: `superpassword`,
+//     passwordRepeat: `superpassword`
+//   },
+//   {
+//     name: `Дарья`,
+//     surname: `King`,
+//     avatar: `mav.jpg`,
+//     email: `darya_king@mail.ru`,
+//     password: `ololo*123`,
+//     passwordRepeat: `ololo*123`
+//   }
+// ];
+
+const mockUsers = [
+  {
+    name: `Alex`,
+    surname: ``,
+    avatar: `dvsdv.jpg`,
+    email: `alex@gmail.com`,
+    passwordHash: `123456`
+  },
+  {
+    name: `Иван`,
+    surname: `Иванович`,
+    avatar: ``,
+    email: `ivan@gmail.com`,
+    passwordHash: `superpassword`,
+  },
+  {
+    name: `Дарья`,
+    surname: `King`,
+    avatar: `mav.jpg`,
+    email: `darya_king@mail.ru`,
+    passwordHash: `ololo*123`,
+  }
+];
 
 const mockCategories = [
   `За жизнь`,
@@ -140,40 +192,97 @@ const mockArticles = [
   }
 ];
 
-const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
+const createAPI = async () => {
+  const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
 
-const app = express();
-app.use(express.json());
+  await initDB(mockDB, {users: mockUsers, articles: mockArticles, categories: mockCategories});
+  const app = express();
+  app.use(express.json());
+  user(app, new UserService(mockDB));
 
-beforeAll(async () => {
-  await initDB(mockDB, {categories: mockCategories, articles: mockArticles, users: USERS});
-  search(app, new SearchService(mockDB));
+  return app;
+};
+
+describe(`API creates a user if form's data is valid. Email is original`, () => {
+  const newUser = {
+    name: `Alex`,
+    surname: `Yufetsin`,
+    avatar: ``,
+    email: `sanek@mail.ru`,
+    password: `mypassword`,
+    passwordRepeat: `mypassword`
+  };
+
+  let response;
+  let app;
+
+  beforeAll(async () => {
+    app = await createAPI();
+    response = await request(app)
+      .post(`/user`)
+      .send(newUser);
+  });
+
+  test(`Status code 201`, () => expect(response.statusCode).toBe(HttpCode.CREATED));
 });
 
-describe(`API returns articles based on search query`, () => {
+
+describe(`API refuses to create a user if form's data is invalid`, () => {
+  const newUser = {
+    name: 123324,
+    surname: 1233323,
+    avatar: 22344354,
+    email: `sanek@mail`,
+    password: `f2sr`,
+    passwordRepeat: `f2ewewf`
+  };
+
+  let app;
   let response;
 
   beforeAll(async () => {
+    app = await createAPI();
     response = await request(app)
-      .get(`/search`)
-      .query({
-        query: `Лучшие рок-музыканты 20-века подарившие нам хиты на века`,
-      });
+      .post(`/user`)
+      .send(newUser);
   });
 
-  test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
-  test(`Two articles found`, () => expect(response.body.length).toBe(2));
-  test(`Article have correct title`, () => {
-    expect(response.body[0].title).toBe(`Лучшие рок-музыканты 20-века подарившие нам хиты на века`);
+  test(`Status code 400`, () => expect(response.statusCode).toBe(HttpCode.BAD_REQUEST));
+  test(`There are all filling mistakes from form's data`, () => {
+    const allMistakes = [
+      `"name" must be a string`,
+      `"surname" must be a string`,
+      `"avatar" must be a string`,
+      `Некорректный формат почты`,
+      `Пароль должен быть не меньше 6 символов`,
+      `Пароли не совпадают`
+    ];
+
+    expect(response.body.errorMessages).toEqual(expect.arrayContaining(allMistakes));
   });
 });
 
-test(`API returns code 404 if nothing was found`, async () => {
-  await request(app).get(`/search`).query({
-    query: `Продам свою душу`,
-  }).expect(HttpCode.NOT_FOUND);
-});
+describe(`API refuses to create a user if form's data is valid, but email occupied`, () => {
+  const newUser = {
+    name: `Alex`,
+    surname: `Yufetsin`,
+    avatar: ``,
+    email: `alex@gmail.com`,
+    password: `mypassword`,
+    passwordRepeat: `mypassword`
+  };
 
-test(`API returns code 400 when query string is absent`, async () => {
-  await request(app).get(`/search`).expect(HttpCode.BAD_REQUEST);
+  let app;
+  let response;
+
+  beforeAll(async () => {
+    app = await createAPI();
+    response = await request(app)
+      .post(`/user`)
+      .send(newUser);
+  });
+
+  test(`Status code 400`, () => expect(response.statusCode).toBe(HttpCode.BAD_REQUEST));
+  test(`Error message should be 'Пользователь с такой почтой уже зарегистрирован'`,
+      () => expect(response.body.errorMessages[0]).toBe(`Пользователь с такой почтой уже зарегистрирован`));
 });

@@ -13,9 +13,10 @@ class CommentService {
     });
   }
 
-  create(articleId, comment) {
+  create(articleId, userId, comment) {
     return this._Comment.create({
       articleId,
+      userId,
       ...comment
     });
   }

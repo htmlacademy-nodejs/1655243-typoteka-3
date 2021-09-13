@@ -21,7 +21,11 @@ block content
               | окно
             .new-publication__form.form
               .form__wrapper.form__wrapper--intro
-                +errorMessage(error)
+                if updateErrors
+                  .form__validation-error
+                    ul.form__errors
+                      each error in updateErrors
+                        li.form__error #{error}
                 .form__field
                   label
                     input(type='text' name='title' placeholder='Заголовок' required='' value=article.title)

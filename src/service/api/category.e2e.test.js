@@ -7,7 +7,7 @@ const Sequelize = require(`sequelize`);
 const initDB = require(`../lib/init-db`);
 const category = require(`./category`);
 const CategoryService = require(`../data-service/category`);
-const {HttpCode} = require(`../../constants`);
+const {HttpCode, USERS} = require(`../../constants`);
 
 const mockCategories = [
   `За жизнь`,
@@ -132,7 +132,7 @@ const app = express();
 app.use(express.json());
 
 beforeAll(async () => {
-  await initDB(mockDB, {categories: mockCategories, articles: mockArticles});
+  await initDB(mockDB, {categories: mockCategories, articles: mockArticles, users: USERS});
   category(app, new CategoryService(mockDB));
 });
 
