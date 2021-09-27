@@ -20,38 +20,42 @@ class API {
     return response.data;
   }
 
-  getArticles({offset, limit, comments}) {
-    return this._load(`/articles`, {params: {offset, limit, comments}});
+  async getArticles({offset, limit, comments, userId, popularArticlesAmount, lastCommentsAmount}) {
+    return await this._load(`/articles`, {params: {offset, limit, comments, userId, popularArticlesAmount, lastCommentsAmount}});
   }
 
-  getArticleById(id) {
-    return this._load(`/articles/${id}`);
+  async getArticleById(id) {
+    return await this._load(`/articles/${id}`);
   }
 
-  createArticle(data) {
-    return this._load(`/articles`, {
+  async getArticlesByCategory({categoryId, offset, limit, comments} = {}) {
+    return await this._load(`/articles/category/${categoryId}`, {params: {offset, limit, comments}});
+  }
+
+  async createArticle(data) {
+    return await this._load(`/articles`, {
       method: HttpMethod.POST,
       data,
     });
   }
 
-  getCategories(count) {
-    return this._load(`/categories`, {params: {count}});
+  async getCategories(count) {
+    return await this._load(`/categories`, {params: {count}});
   }
 
-  search(query) {
-    return this._load(`/search`, {params: {query}});
+  async search(query) {
+    return await this._load(`/search`, {params: {query}});
   }
 
-  editArticle(id, data) {
-    return this._load(`/articles/${id}`, {
+  async editArticle(id, data) {
+    return await this._load(`/articles/${id}`, {
       method: HttpMethod.PUT,
       data
     });
   }
 
-  createComment(id, data) {
-    return this._load(`/articles/${id}/comments`, {
+  async createComment(id, data) {
+    return await this._load(`/articles/${id}/comments`, {
       method: HttpMethod.POST,
       data
     });
@@ -59,8 +63,15 @@ class API {
 
   async createUser(data) {
     return await this._load(`/user`, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data
+    });
+  }
+
+  async auth(email, password) {
+    return await this._load(`/user/auth`, {
+      method: HttpMethod.POST,
+      data: {email, password}
     });
   }
 }

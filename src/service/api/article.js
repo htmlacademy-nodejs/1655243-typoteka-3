@@ -13,16 +13,48 @@ module.exports = (app, articleService, commentService) => {
   app.use(`/articles`, route);
 
   route.get(`/`, async (req, res) => {
-    const {offset, limit, comments} = req.query;
-    let articles;
+    const {offset, limit, comments, popularArticlesAmount, lastCommentsAmount, userId} = req.query;
+    let articlePromise;
 
-    if (limit || offset) {
-      articles = await articleService.findPage({limit, offset});
-    } else {
-      articles = await articleService.findAll(comments);
+    if (userId) {
+      const articles = await articleService.findAll(comments, userId);
+      return res.status(HttpCode.OK).json(articles);
     }
 
-    res.status(HttpCode.OK).json(articles);
+    if (limit || offset) {
+      articlePromise = articleService.findPage({limit, offset});
+    } else {
+      articlePromise = articleService.findAll(comments);
+    }
+
+    const [articlesData, popularArticles, lastComments] = await Promise.all([
+      articlePromise,
+      articleService.getPopularArticles(popularArticlesAmount),
+      articleService.getLastComments(lastCommentsAmount)
+    ]);
+
+    return res.status(HttpCode.OK).json({
+      articlesData,
+      popularArticles,
+      lastComments
+    });
+  });
+
+  route.get(`/category/:categoryId`, async (req, res) => {
+    const {categoryId} = req.params;
+    const {offset, limit, comments} = req.query;
+    const articles = await articleService.findByCategoryPage(comments, {categoryId, offset, limit});
+
+    if (articles) {
+      res
+        .status(HttpCode.OK)
+        .json(articles);
+
+    } else {
+      res
+        .status(HttpCode.NOT_FOUND)
+        .send(`Not found articles belonging to category with id:${categoryId}`);
+    }
   });
 
   route.get(`/:articleId`, async (req, res) => {

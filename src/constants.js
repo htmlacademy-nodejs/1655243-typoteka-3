@@ -19,6 +19,8 @@ const FILE_COMMENTS_PATH = `./data/comments.txt`;
 const MIN_PASSWORD_LENGTH = 6;
 const MAX_PASSWORD_LENGTH = 12;
 
+const ARTICLES_PER_PAGE = 8;
+
 const ExitCode = {
   ERROR: 1,
 };
@@ -74,6 +76,11 @@ const USERS = [
   }
 ];
 
+const ErrorAuthMessage = {
+  EMAIL: `Электронный адрес не существует`,
+  PASSWORD: `Неверный пароль`
+};
+
 module.exports = {
   API_PREFIX,
   DEFAULT_COMMAND,
@@ -93,10 +100,12 @@ module.exports = {
   MIN_PASSWORD_LENGTH,
   MAX_PASSWORD_LENGTH,
   USERS,
+  ARTICLES_PER_PAGE,
   HttpCode,
   ExitCode,
   AnnounceRestrict,
   Environment,
   DbPoolConnection,
-  HttpMethod
+  HttpMethod,
+  ErrorAuthMessage
 };

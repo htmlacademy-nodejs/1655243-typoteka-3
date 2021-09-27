@@ -15,8 +15,8 @@ module.exports = Joi.object({
     .required()
     .messages({
       'any.required': getRequiredFieldErrorMessage(`Текст комментария`),
-      'string.min': getShortFieldLengthErrorMessage(20),
-      'string.max': getLongFieldLengthErrorMessage(255),
+      'string.min': getShortFieldLengthErrorMessage(`Текст комментария`, 20),
+      'string.max': getLongFieldLengthErrorMessage(`Текст комментария`, 255),
     }),
 
   userId: Joi

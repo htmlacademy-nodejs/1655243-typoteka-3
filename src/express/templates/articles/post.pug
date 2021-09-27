@@ -12,71 +12,43 @@ block content
             time.post__date(datetime='2019-03-21T20:33') 21.03.2019, 20:33
             h2.post__title.title.title--main #{article.title}
             ul.post__themes.themes
-              li.themes__item
-                a.themes__item-link(href='#')
-                  | Автомобили
-                  sup 88
-                button.themes__remove-btn(type='button') Удалить категорию
-              li.themes__item
-                a.themes__item-link(href='#')
-                  | Удаленная работа
-                  sup 13
-                button.themes__remove-btn(type='button') Удалить категорию
-              li.themes__item
-                a.themes__item-link(href='#')
-                  | Бизнес
-                  sup 13
-                button.themes__remove-btn(type='button') Удалить категорию
-          .post__picture
-            img(src=`/img/${article.picture}` alt= article.title)
+              each category in categories
+                li.themes__item
+                  a.themes__item-link(href=`/articles/category/${category.id}`)
+                    | #{category.name}
+                    sup #{category.count}
+                  button.themes__remove-btn(type='button') Удалить категорию
+          if article.picture
+            .post__picture
+              img(src=`/img/${article.picture}` alt= article.title)
           .post__text
             h3 #{article.announce}
             p #{article.fullText}
       .post__wrapper.post__wrapper--comments
         section.post__comments.comments
-          h2.comments__title.title.title--middle Комментарии
-          ul.comments__list
-            li.comments__comment
-              .comments__avatar.avatar
-                img(src='/img/avatar-1.png' alt='аватар пользователя')
-              .comments__text
-                .comments__head
-                  p Евгений Петров •
-                  time.comments__date(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-                p.comments__message Автор, ты все выдумал, покайся
-            li.comments__comment
-              .comments__avatar.avatar
-                img(src='/img/avatar-5.png' alt='аватар пользователя')
-              .comments__text
-                .comments__head
-                  p Александр Марков •
-                  time.comments__date(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-                p.comments__message
-                  | Конечно, прежде чем так писать, нужно
-                  | искренне
-                  | приложить усилия, чтобы разобраться — не все люди умеют выражать свои мысли.
-            li.comments__comment
-              .comments__avatar.avatar
-                img(src='/img/avatar-4.png' alt='аватар пользователя')
-              .comments__text
-                .comments__head
-                  p Евгений Петров •
-                  time.comments__date(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-                p.comments__message Автор, ты все выдумал, покайся
-            li.comments__comment
-              .comments__avatar.avatar
-                img(src='/img/avatar-3.png' alt='аватар пользователя')
-              .comments__text
-                .comments__head
-                  p Александр Марков •
-                  time.comments__date(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-                p.comments__message
-                  | Конечно, прежде чем так писать, нужно
-                  | искренне приложить усилия, чтобы разобраться — не все люди умеют выражать свои мысли.
-          .comments__footer.comments__footer--user
-            form(action='#')
-              .comments__avatar.avatar
-                img(src='/img/avatar-2.png' alt='аватар пользователя')
-              label(for="comment-field")
-                textarea#comment-field.js-field(rows='1' name='message' placeholder='Присоединиться к обсуждению')
-              button.comments__button.button.button--colored(type='submit') Опубликовать
+          if article.comments.length === 0
+            h2.comments__title.title.title--middle Комментарии отсутствуют
+          else
+            h2.comments__title.title.title--middle Комментарии
+            ul.comments__list
+              each comment in article.comments
+                li.comments__comment
+                .comments__avatar.avatar
+                  img(src='/img/avatar-1.png' alt='аватар пользователя')
+                .comments__text
+                  .comments__head
+                    p #{comment.user.name} #{comment.user.surname} •
+                    time.comments__date(datetime='2019-03-21T20:33') 21.03.2019, 20:33
+                  p.comments__message #{comment.text}
+            .comments__footer.comments__footer--user
+              form(action=`/articles/${article.id}/comments` method='POST' enctype="application/x-www-form-urlencoded" autocomplete="off")
+                input(type="hidden" name="_csrf" value=csrfToken)
+                .comments__avatar.avatar
+                  img(src='/img/avatar-2.png' alt='аватар пользователя')
+                label(for="comment-field")
+                  textarea#comment-field.js-field(rows='1' name='message' placeholder='Присоединиться к обсуждению')
+                button.comments__button.button.button--colored(type='submit') Опубликовать
+              if commentCreationErrors
+                each error in commentCreationErrors
+                  p.comments__error #{error}
+

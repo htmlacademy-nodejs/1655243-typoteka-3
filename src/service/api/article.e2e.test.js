@@ -180,8 +180,8 @@ describe(`API returns a list of all articles`, () => {
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
-  test(`Returns a list of 5 articles`, () => expect(response.body.length).toBe(5));
-  test(`First article's title equals ${FIRST_ARTICLE_TITLE}`, () => expect(response.body[0].title).toBe(FIRST_ARTICLE_TITLE));
+  test(`Returns a list of 5 articles`, () => expect(response.body.articlesData.length).toBe(5));
+  test(`First article's title equals ${FIRST_ARTICLE_TITLE}`, () => expect(response.body.articlesData[0].title).toBe(FIRST_ARTICLE_TITLE));
 });
 
 describe(`API returns an article with given id`, () => {
@@ -215,7 +215,7 @@ describe(`API creates new article if data is valid`, () => {
   test(`Articles count increased by one`, async () => {
     await request(app)
       .get(`/articles`)
-      .expect((res) => expect(res.body.length).toBe(6));
+      .expect((res) => expect(res.body.articlesData.length).toBe(6));
   });
 });
 
@@ -308,7 +308,7 @@ describe(`API correctly removes an article`, () => {
   test(`Articles count decreased by one`, async () => {
     await request(app)
       .get(`/articles`)
-      .expect((res) => expect(res.body.length).toBe(4));
+      .expect((res) => expect(res.body.articlesData.length).toBe(4));
   });
 });
 
