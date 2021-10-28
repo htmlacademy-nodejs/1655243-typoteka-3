@@ -20,7 +20,7 @@ const define = (sequelize) => Article.init({
     type: DataTypes.TEXT,
     allowNull: false,
   },
-  createdDate: {
+  createdAt: {
     type: DataTypes.DATE,
     allowNull: false,
   }

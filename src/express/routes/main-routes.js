@@ -2,12 +2,12 @@
 
 const {Router} = require(`express`);
 const {calculatePaginationParams} = require(`../../utils`);
-const upload = require(`../../service/middlewares/upload`);
+const upload = require(`../middlewares/upload`);
 const {ARTICLES_PER_PAGE} = require(`../../constants`);
 
 const mainRouter = new Router();
 const api = require(`../api`).getAPI();
-const auth = require(`../../service/middlewares/auth`);
+const auth = require(`../middlewares/auth`);
 
 mainRouter.get(`/`, async (req, res) => {
   const {user} = req.session;

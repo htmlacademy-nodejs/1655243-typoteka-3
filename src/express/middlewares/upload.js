@@ -7,15 +7,26 @@ const {nanoid} = require(`nanoid`);
 const UPLOAD_DIR = `../../express/upload/img/`;
 const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
 
+const FILE_NAME_LENGTH = 10;
+const FILE_TYPES = [`image/png`, `image/jpg`, `image/jpeg`];
+
 const storage = multer.diskStorage({
   destination: uploadDirAbsolute,
   filename: (req, file, cb) => {
-    const uniqueName = nanoid(10);
+    const uniqueName = nanoid(FILE_NAME_LENGTH);
     const extension = file.originalname.split(`.`).pop();
     cb(null, `${uniqueName}.${extension}`);
   }
 });
 
-const upload = multer({storage});
+const fileFilter = (req, file, cb) => {
+  if (FILE_TYPES.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const upload = multer({storage, fileFilter});
 
 module.exports = upload;

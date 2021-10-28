@@ -16,7 +16,7 @@ block content
           if results.length
             each article in results
               .search__result
-                +dateTime(article.createdDate)(class='.search__date')
+                +dateTime(article.createdAt)(class='.search__date')
                 +searchText(article, search)
         if (!results.length && search)
           p.search-page__empty Ничего не нашлось

@@ -2,7 +2,7 @@
 
 const {Router} = require(`express`);
 const api = require(`../api`).getAPI();
-const auth = require(`../../service/middlewares/auth`);
+const auth = require(`../middlewares/auth`);
 
 const myRouter = new Router();
 

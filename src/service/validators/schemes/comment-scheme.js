@@ -19,6 +19,8 @@ module.exports = Joi.object({
       'string.max': getLongFieldLengthErrorMessage(`Текст комментария`, 255),
     }),
 
+  createdAt: Joi.date().required(),
+
   userId: Joi
     .number()
     .integer()
