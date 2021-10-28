@@ -68,7 +68,7 @@ class ArticleService {
       distinct: true,
       limit,
       offset,
-      order: [[`createdDate`, `DESC`]]
+      order: [[`createdAt`, `DESC`]]
     });
 
     return {
@@ -83,7 +83,7 @@ class ArticleService {
       offset,
       include: [Aliase.CATEGORIES, Aliase.COMMENTS],
       distinct: true,
-      order: [[`createdDate`, `DESC`]],
+      order: [[`createdAt`, `DESC`]],
     });
     return {count, articles: rows};
   }
@@ -116,7 +116,7 @@ class ArticleService {
         `picture`,
         `announce`,
         `fullText`,
-        `createdDate`,
+        `createdAt`,
         `userId`,
         [Sequelize.fn(`COUNT`, `comments.id`), `commentsCount`]
       ],

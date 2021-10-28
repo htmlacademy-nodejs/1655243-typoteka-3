@@ -3,8 +3,8 @@
 const {Router} = require(`express`);
 const csrf = require(`csurf`);
 
-const upload = require(`../../service/middlewares/upload`);
-const auth = require(`../../service/middlewares/auth`);
+const upload = require(`../middlewares/upload`);
+const auth = require(`../middlewares/auth`);
 const {calculatePaginationParams} = require(`../../utils`);
 
 const api = require(`../api`).getAPI();
@@ -42,7 +42,7 @@ articlesRouter.post(`/add`, auth, upload.single(`upload`), csrfProtection, async
   const {body, file} = req;
 
   const articleData = {
-    createdDate: body.date,
+    createdAt: body.date,
     title: body.title,
     categories: [],
     announce: body.announcement,
@@ -95,7 +95,7 @@ articlesRouter.post(`/edit/:id`, auth, upload.single(`upload`), csrfProtection, 
   const {id} = req.params;
 
   const articleData = {
-    createdDate: body.date,
+    createdAt: body.date,
     title: body.title,
     categories: [],
     announce: body.announcement,

@@ -9,6 +9,10 @@ const define = (sequelize) => Comment.init({
     type: DataTypes.TEXT,
     allowNull: false,
   },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  }
 }, {
   sequelize,
   modelName: `Comment`,

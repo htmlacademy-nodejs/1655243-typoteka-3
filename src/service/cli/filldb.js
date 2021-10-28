@@ -67,7 +67,7 @@ const generateArticles = (count, titles, categories, sentences, comments, users)
     title: titles[getRandomInt(0, titles.length - 1)],
     announce: shuffle(sentences).slice(AnnounceRestrict.MIN, AnnounceRestrict.MAX).join(` `),
     fullText: shuffle(sentences).slice(1, sentences.length - 1).join(` `),
-    createdDate: getRandomDate(MONTH_DIFFERENCE_BETWEEN_DATES),
+    createdAt: getRandomDate(MONTH_DIFFERENCE_BETWEEN_DATES),
     categories: getRandomItemsFromArray(categories),
     comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments, users),
     user: users[getRandomInt(0, users.length - 1)].email
@@ -82,6 +82,7 @@ const generateComments = (count, comments, users) => {
     text: shuffle(comments)
       .slice(0, getRandomInt(1, MAX_COMMENT_SENTENCES))
       .join(` `),
+    createdAt: getRandomDate(MONTH_DIFFERENCE_BETWEEN_DATES),
     user: users[getRandomInt(0, users.length - 1)].email
   }));
 };

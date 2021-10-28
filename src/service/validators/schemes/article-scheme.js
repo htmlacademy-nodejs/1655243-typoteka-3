@@ -51,7 +51,7 @@ module.exports = Joi.object({
     .min(1)
     .required(),
 
-  createdDate: Joi.date().required(),
+  createdAt: Joi.date().required(),
 
   userId: Joi
     .number()
